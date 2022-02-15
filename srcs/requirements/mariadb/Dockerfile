@@ -11,14 +11,14 @@ RUN apt-get update \
 		vim \
 		sudo
 
-COPY ./COPY/my.cnf /etc/mysql/my.cnf
-COPY ./COPY/mysql_setup.sh /usr/local/bin/mysql_setup.sh
+COPY ./tools/my.cnf /etc/mysql/my.cnf
+COPY ./tools/mysql_setup.sh /usr/local/bin/mysql_setup.sh
 
 RUN chmod +x  /usr/local/bin/*
 
-ENV			MARIADB_USER=mariadb_user			\
-			MARIADB_PASSWORD=mariadb_password	\
-			MARIADB_DATABASE=mariadb_database	\
+ENV			MARIADB_USR=mariadb_user			\
+			MARIADB_PWD=mariadb_password	\
+			MARIADB_DB=mariadb_database	\
 			MARIADB_PORT=3306
 
 

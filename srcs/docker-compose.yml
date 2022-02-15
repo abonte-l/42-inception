@@ -1,5 +1,10 @@
 version: "3"
+
+
 services:
+#########################
+########  Nginx  ########
+#########################
   nginx:
     container_name: nginx
     image: inception/nginx:1.0
@@ -8,24 +13,36 @@ services:
     networks:
       - frontend
       - backend
+    volumes:
+      - wordpress-volume:/var/www/html
     restart:
       on-failure
+
+##########################
+######  Wordpress  #######
+##########################
   wordpress:
     container_name: wordpress
     image: inception/wordpress:1.0
     depends_on:
       - maria_db
-    ports:
-     - 443:443
+    expose:
+     - "9000"
     networks:
       - backend
       - backend2
     volumes:
-      - /var/container/CDN:/var/www/html
+      - wordpress-volume:/var/www/html
     restart:
       on-failure
+#########################
+#######  MariaDB  #######
+#########################
   maria_db:
-    image: inception/maria_db:1.0
+    container_name: mariadb
+    image: inception/mariadb:1.0
+    expose:
+     - "3306"
     networks:
       - backend2
     environment:
@@ -34,7 +51,11 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_USER=${MYSQL_USER}
     volumes:
-      -/var/container/DB:/var/lib/mysql
+      - mariadb-volume:/var/lib/mysql
+
+##########################
+#######  Networks  #######
+##########################
 networks:
   frontend:
     driver: bridge
@@ -42,7 +63,11 @@ networks:
     external: false
   backend2:
     external: false
-  volumes:
+
+########################
+#######  Volumes #######
+########################
+volumes:
     mariadb-volume:
       driver: local
       driver_opts:

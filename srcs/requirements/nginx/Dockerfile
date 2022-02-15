@@ -12,7 +12,9 @@ RUN apt-get update \
 		sudo
 
 RUN	rm -f /etc/nginx/nginx.conf
-COPY ./tools/nginx.conf /etc/nginx/nginx.conf
+COPY ./tools/nginx.conf /etc/nginx/sites-available/localhost
+
+RUN ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/localhost
 
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=FR/ST=IDF/L=Paris/O=42/CN=abonte-l' -keyout /etc/ssl/certs/localhost.key -out /etc/ssl/certs/localhost.crt
 

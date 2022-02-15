@@ -15,6 +15,9 @@ RUN apt-get update \
 
 COPY ./tools/wordpress.tar.gz /var/www/html/
 
+#RUN chown -R www-data:www-data /var/www/html/ \
+	#chmod 755 /var/www/html/
+
 WORKDIR /var/www/html/
 
 ENV	MARIADB_HOST="mariadb" \
@@ -28,8 +31,8 @@ RUN tar xf ./wordpress.tar.gz && rm -rf wordpress.tar.gz \
 
 RUN	mkdir /var/log/php-fpm \
 	mkdir /scripts
-COPY ./config/php-fpm.conf /etc/php7/php-fpm.conf
-COPY ./config/www.conf /etc/php7/php-fpm.d/www.conf
+COPY ./tools/php-fpm.conf /etc/php7.3/php-fpm.conf
+COPY ./tools/www.conf /etc/php7.3/php-fpm.d/www.conf
 
 COPY ./tools /config
 COPY ./tools/wp-config.php ./
@@ -39,3 +42,4 @@ EXPOSE 9000
 
 HEALTHCHECK --interval=30s --timeout=3s CMD --fail https://127.0.0.1/ || exit 1
 ENTRYPOINT ["bash", "/scripts/wp_setup.sh"]
+CMD ["php-fpm7", "--nodaemonize"]
